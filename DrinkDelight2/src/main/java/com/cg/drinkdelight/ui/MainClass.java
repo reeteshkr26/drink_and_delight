@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.cg.drinkdelight.dao.UtilityClass;
 import com.cg.drinkdelight.exception.MyException;
 import com.cg.drinkdelight.model.User;
 import com.cg.drinkdelight.service.UserServiceImpl;
@@ -16,6 +17,7 @@ public class MainClass {
 	InputStreamReader isr;
 	BufferedReader buff;
 	UserServiceImpl userServiceImpl;
+	UtilityClass utilityClass;
 
 	public static void main(String[] args) {
 
@@ -23,6 +25,7 @@ public class MainClass {
 		mObject.isr = new InputStreamReader(System.in);
 		mObject.buff = new BufferedReader(mObject.isr);
 		mObject.userServiceImpl = new UserServiceImpl();
+		mObject.utilityClass = new UtilityClass();
 		mObject.performOperation();
 
 	}
@@ -31,8 +34,9 @@ public class MainClass {
 
 		try {
 
-			System.out.println(
-					"*************Welcome to Drink and Delight*********** \n 1.Login \n 2.Register \n 3.Forgot Password ");
+			utilityClass.showMessage(
+					"*************Welcome to Drink and Delight*********** \n 1.Login \n 2.Register \n 3.Forgot Password ",
+					1);
 			System.out.print("Enter your choice:");
 			int choice = Integer.parseInt(buff.readLine());
 			System.out.println();
@@ -53,14 +57,15 @@ public class MainClass {
 			}
 
 		} catch (Exception e) {
-			System.out.println(e.getMessage() + "\n");
+			utilityClass.showMessage("Exception msg:"+e.getMessage() + "\n", 1);
 
 		}
 
 	}
 
 	public void userRegistrationProcess() {
-		System.out.println("****************Registration Page***************");
+
+		utilityClass.showMessage("****************Registration Page***************", 1);
 
 		try {
 			System.out.print("Enter your userId : ");
@@ -81,15 +86,18 @@ public class MainClass {
 				User user = new User(userId, userName, email, password, phoneNumber, gen, LocalDate.now());
 				if (!(userServiceImpl.userExists(user))) {
 					if (userServiceImpl.userRegistration(user)) {
-						System.out.println("Registreation Success...\n");
+
+						utilityClass.showMessage("Registreation Success...\n", 1);
 						performOperation();
 					} else {
-						System.out.println("Registration Failed...\n");
+
+						utilityClass.showMessage("Registration Failed...\n", 1);
 						performOperation();
 					}
 
 				} else {
-					System.out.println("User Already exits...\n");
+
+					utilityClass.showMessage("User Already exits...\n", 1);
 					performOperation();
 				}
 			} else {
@@ -97,14 +105,15 @@ public class MainClass {
 			}
 
 		} catch (Exception e) {
-			System.out.println("Exception Message: " + e.getMessage());
+
+			utilityClass.showMessage("Exception Message: " + e.getMessage(), 1);
 		}
 
 	}
 
 	public void userLoginProcess() {
 
-		System.out.println("****************Login Page***************");
+		utilityClass.showMessage("****************Login Page***************", 1);
 
 		try {
 			System.out.print("Enter your userId : ");
@@ -121,22 +130,23 @@ public class MainClass {
 			User currentUser = userServiceImpl.userLogin(id, password);
 
 			if (currentUser != null) {
-				System.out.println("Login Sucess...\n");
+				utilityClass.showMessage("Login Sucess...\n", 1);
 				homePage(currentUser);
 			}
 
 			else {
-				System.out.println("Invalid UserId & Password\n");
+
+				utilityClass.showMessage("Invalid UserId & Password\n", 1);
 
 				performOperation();
 			}
 
 		} catch (IOException e) {
 
-			System.out.println(e.getMessage());
+			utilityClass.showMessage("Exception Message: " + e.getMessage(), 1);
 		} catch (MyException e) {
 
-			System.out.println(e.getMessage() + "\n");
+			utilityClass.showMessage(e.getMessage() + "\n", 1);
 			userLoginProcess();
 		}
 
@@ -144,7 +154,7 @@ public class MainClass {
 
 	private void performForgotPassword() {
 
-		System.out.println("****************Forgot Password Page***************");
+		utilityClass.showMessage("****************Forgot Password Page***************", 1);
 		try {
 			System.out.print("Enter your userId: ");
 			String uid = buff.readLine();
@@ -156,27 +166,27 @@ public class MainClass {
 				System.out.print("Enter your new password:");
 				String pass = buff.readLine();
 				if (userServiceImpl.setPassword(u, pass)) {
-					System.out.println("Password reset Succesfully..\n");
+					utilityClass.showMessage("Password reset Succesfully..\n", 1);
 					userLoginProcess();
 				}
 			} else {
-				System.out.println("UserId does not exist...\n");
+
+				utilityClass.showMessage("UserId does not exist...\n", 1);
 				performOperation();
 			}
 		} catch (IOException e) {
 
-			System.out.println(e.getMessage());
+			utilityClass.showMessage("Exception Message: " + e.getMessage(), 1);
 		}
 
 	}
 
 	public void homePage(User currentUser) {
 
-		System.out.println("***************Home Page***********************");
-
+		utilityClass.showMessage("***************Home Page***********************", 1);
 		try {
-			System.out.println(
-					"\n 1. Show User Details\n 2. Operation on Raw Material\n 3. Operation on Product\n 4. LogOut ");
+			utilityClass.showMessage(
+					"\n 1. Show User Details\n 2. Operation on Raw Material\n 3. Operation on Product\n 4. LogOut ", 1);
 			System.out.print("Enter your choice:");
 			int choice = Integer.parseInt(buff.readLine());
 			System.out.println();
@@ -186,26 +196,29 @@ public class MainClass {
 				break;
 
 			case 2:
-				System.out.println("********Operation on Raw Material*******");
 
+				utilityClass.showMessage("********Operation on Raw Material*******", 1);
 				break;
 
 			case 3:
-				System.out.println("********Operation Product*******");
+
+				utilityClass.showMessage("********Operation Product*******", 1);
 				break;
 
 			case 4:
-				if (userServiceImpl.logout())
+				if (userServiceImpl.logout()) {
+					System.out.println("Logout successfully...");
 					System.exit(0);
+				}
+
 				break;
 
 			default:
 				throw new MyException("Invalid Choice");
 			}
-			System.out.println("Thank u for visiting my Page");
-		} catch (Exception e) {
 
-			System.out.println(e.getMessage() + "\n");
+		} catch (Exception e) {
+			utilityClass.showMessage("Exception message:"+ e.getMessage() + "\n", 1);
 		}
 	}
 
@@ -237,7 +250,7 @@ public class MainClass {
 			Matcher matcher = pattern.matcher(email);
 			if (!(matcher.matches())) {
 
-				throw new MyException("Error Meaasage: email id is incorrect..plz enter correct email");
+				throw new MyException("Error Meaasage: Invalid email Id");
 
 			}
 			if (password.isEmpty()) {
@@ -255,6 +268,12 @@ public class MainClass {
 				throw new MyException("Error Meaasage: Phone is empty");
 
 			}
+			Pattern p = Pattern.compile("(0/91)?[7-9][0-9]{9}"); 
+			Matcher m = p.matcher(phone);
+			
+			if(!(m.find()&&m.group().equals(phone))) {
+				throw new MyException("Error Meaasage: Invalid Mobile Number");
+			}
 			if (gen.isEmpty()) {
 
 				throw new MyException("Error Meaasage: Gender is empty");
@@ -262,12 +281,13 @@ public class MainClass {
 			}
 			if (!(gen.equalsIgnoreCase("Male") || gen.equalsIgnoreCase("Female"))) {
 
-				throw new MyException("Error Meaasage: plz enter correct gender...");
+				throw new MyException("Error Meaasage: Invalid Gender");
 
 			}
 
 		} catch (MyException e) {
-			System.out.println(e.getMessage() + "\n");
+
+			utilityClass.showMessage(e.getMessage() + "\n", 1);
 			return false;
 		}
 

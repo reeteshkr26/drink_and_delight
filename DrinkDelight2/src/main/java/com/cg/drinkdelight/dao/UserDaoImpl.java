@@ -6,8 +6,7 @@ import com.cg.drinkdelight.model.User;
 
 public class UserDaoImpl implements UserDao {
 	static List<User> userList = new ArrayList<User>();
-
-
+	
 	public List<User> getUserList() {
 
 		return userList;

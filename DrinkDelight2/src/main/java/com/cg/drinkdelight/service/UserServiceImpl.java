@@ -1,7 +1,9 @@
 package com.cg.drinkdelight.service;
 
 import java.util.List;
+
 import com.cg.drinkdelight.dao.UserDaoImpl;
+import com.cg.drinkdelight.dao.UtilityClass;
 import com.cg.drinkdelight.model.User;
 
 public class UserServiceImpl implements UserService {
@@ -38,24 +40,27 @@ public class UserServiceImpl implements UserService {
 		List<User> userList = userDaoImpl.getUserList();
 
 		User currentUser = null;
-		for (User u : userList) {
-			if (u.getUserId().equals(id) && u.getPassword().equals(pass)) {
-
-				currentUser = u;
-				break;
+		if(!userList.isEmpty()) {
+			for (User u : userList) {
+				if (u.getUserId().equals(id) && u.getPassword().equals(pass)) {
+					currentUser = u;
+					break;
+				}
 			}
 		}
-
+		
 		if (currentUser != null) {
 			return currentUser;
 		} else {
 			return null;
 		}
+	
 	}
 
 	public void myAccount(User u) {
 
-		System.out.println("User Name:"+u.getUserName());
+		new UtilityClass().showMessage("User Name:"+u.getUserName(), 2);
+		
 	}
 
 	public boolean logout() {
